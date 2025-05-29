@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Product Management";
+}
+
+<div id="employee-app">
+    <employee-list></employee-list>
+</div>
+
+<template id="employee-template">
+    <div>
+        <h1>Employees List</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Salary</th>
+                    <th>Age</th>
+                    <th>Profile image</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                <tr v-for="p in employees" :key="p.id">
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.employee_name }}</td>
+                    <td>{{ p.employee_salary }}</td>
+                    <td>{{ p.employee_age }}</td>
+                    <td>{{ p.profile_image }}</td>
+              
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+@section Scripts {
+    <script type="module" src="/app/employees.js"></script>
+}

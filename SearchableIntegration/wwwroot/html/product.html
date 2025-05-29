@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Product List";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Vue List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css">
+    <script type="module" src="https://unpkg.com/vue@3/dist/vue.esm-browser.js"></script>
+    <script type="module" src="/app/product.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f8f8f8;
+            padding: 20px;
+        }
+
+        table {
+            background: white;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div id="product-app">
+        <product-list></product-list>
+    </div>
+
+    <template id="product-template">
+        <div>
+            <h1>Product Listtt</h1>
+            <table border="1" cellpadding="6">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Supplier</th>
+                    <th>Manufactured</th>
+                    <th>Expiry</th>
+                </tr>
+                <tr v-for="p in products" :key="p.id">
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.category }}</td>
+                    <td>{{ p.price.toFixed(2) }}</td>
+                    <td>{{ p.stockQuantity }}</td>
+                    <td>{{ p.supplierID }}</td>
+                    <td>{{ p.manufacturedDate }}</td>
+                    <td>{{ p.expiryDate }}</td>
+                </tr>
+            </table>
+        </div>
+    </template>
+</body>
+</html>

@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@* 
+    <!-- Optional reset (you already have it) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css"> *@
+
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #45a049;
+            --text-color: #333;
+            --light-gray: #f8f8f8;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #ccc;
+            --white: #fff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+            .nav-links li {
+                margin-left: 20px;
+            }
+
+            .nav-links a {
+                color: var(--white);
+                text-decoration: none;
+                font-weight: bold;
+                transition: opacity 0.3s;
+            }
+
+                .nav-links a:hover {
+                    opacity: 0.8;
+                }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        main {
+            min-height: calc(100vh - 200px);
+            padding: 20px 0;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 20px;
+        }
+
+        /* Common form styles */
+        input, button, select, textarea {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border: 1px solid var(--dark-gray);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+      
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            button:hover {
+                background-color: var(--secondary-color);
+            }
+
+            button:disabled {
+                background-color: var(--dark-gray);
+                cursor: not-allowed;
+            }
+
+        table {
+            background: var(--white);
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--dark-gray);
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: var(--medium-gray);
+        }
+
+        .preview {
+            max-height: 80px;
+            margin-top: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+
+        .alert-error {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Product Management</div>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="nav-links">
+                       
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ProductApi" asp-action="Index">Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="DummyApiIntegration" asp-action="Index">ApiCall</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ExportImport" asp-action="Index">Excel Upload</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout</a>
+
+                        </li>
+                    </ul>
+                </div>
+
+          @*       <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul> *@
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">@TempData["ErrorMessage"]</div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="container">
+            &copy; @DateTime.Now.Year - Product Management System
+        </div>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

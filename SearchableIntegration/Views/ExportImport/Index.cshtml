@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Export Import";
+}
+
+<div id="exportimport-app">
+    <export-import></export-import>
+</div>
+
+<template id="exportimport-template">
+    <div>
+        <h1>Product Import</h1>
+
+        <input type="file" accept=".csv,.xlsx" @@change ="handleFileUpload">
+        <button @@click ="addExportImport">Upload</button>
+
+        <div v-if="skippedRows.length">
+            <h4>Skipped Rows (Messages):</h4>
+            <ul>
+                <li v-for="msg in skippedRows" :key="msg">{{ msg }}</li>
+            </ul>
+        </div>
+
+        <div v-if="skippedData.length">
+            <h4>Skipped Rows (Table):</h4>
+            <table>
+                <thead>
+                    <tr><th>Row</th><th>Reason</th></tr>
+                </thead>
+                <tbody>
+                    <tr v-for="r in skippedData" :key="r.Row">
+                        <td>{{ r.row }}</td>
+                        <td>{{ r.reason }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button @@click ="downloadSkipped">Download Skipped Rows CSV</button>
+        </div>
+
+        <table v-if="imported.length">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>SupplierID</th>
+                    <th>Manufactured</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="p in imported" :key="p.ProductName + p.ManufacturedDate">
+                    <td>{{ p.ProductName }}</td>
+                    <td>{{ p.Category }}</td>
+                    <td>{{ p.Price }}</td>
+                    <td>{{ p.StockQuantity }}</td>
+                    <td>{{ p.SupplierID }}</td>
+                    <td>{{ p.ManufacturedDate }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+@section Scripts {
+    <script type="module" src="/app/exportimport.js"></script>
+}

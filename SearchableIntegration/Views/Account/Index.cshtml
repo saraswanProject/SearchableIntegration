@@ -1,0 +1,40 @@
+﻿
+<div id="login-app">
+    <login></login>
+</div>
+<template id="login-template">
+    <div id="login-app" class="login-wrapper">
+        <div class="container">
+            <div class="row justify-content-center align-items-center min-vh-100">
+                <div class="col-md-5 col-lg-4">
+                    <div class="card shadow-lg p-4 rounded-4">
+                        <div class="card-header bg-transparent text-center border-0">
+                            <h4 class="fw-bold text-primary">Login</h4>
+                        </div>
+                        <div class="card-body">
+                            <form v-on:submit.prevent="submitLogin">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" v-model="credentials.email" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" v-model="credentials.password" required />
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" type="submit">Login</button>
+                                </div>
+                                <div v-if="error" class="alert alert-danger mt-3">{{ error }}</div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+@section Scripts {
+    <script type="module" src="/app/login.js"></script>
+}
