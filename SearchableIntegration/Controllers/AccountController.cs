@@ -62,26 +62,59 @@ public class AccountApiController : ControllerBase
         var principal = new ClaimsPrincipal(identity);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-    //        await HttpContext.SignInAsync(
-    //CookieAuthenticationDefaults.AuthenticationScheme,
-    //principal,
-    //new AuthenticationProperties
-    //{
-    //    IsPersistent = true,
-    //    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1)
-    //});
-
-            return Ok(new { message = "Login successful",status="success" });
+        return Ok(new { message = "Login successful",status="success" });
 
     }
 
-    // POST: /api/account/logout
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync();
-        return Ok();
-    }
-}   
+        [HttpPost("signup")]
+        public async Task<IActionResult> Signup([FromBody] SignupModel model)
+        {
+            if (string.IsNullOrEmpty(model.Name) ||
+              string.IsNullOrEmpty(model.Email) ||
+              string.IsNullOrEmpty(model.Password) ||
+              string.IsNullOrEmpty(model.Role))
+            {
+                return BadRequest(new { message = "All fields are required" });
+            }
+            if (model.Role != "User" && model.Role != "Admin")
+            {
+                return BadRequest(new { message = "Invalid role selection" });
+            }
+
+            // Validate model
+            //if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            //    return BadRequest(new { message = "Email and password are required" });
+
+            // Check if user already exists
+            var checkParameters = new DynamicParameters();
+            checkParameters.Add("@flag", "e");
+            checkParameters.Add("@Email", model.Email);
+            var existingUser = await _dbHelperService.ExecuteQuery<dynamic>("spa_login", checkParameters, true);
+
+            if (existingUser.Any())
+                return BadRequest(new { message = "Email already registered" });
+
+            // Create new user
+            var createParameters = new DynamicParameters();
+            createParameters.Add("@flag", "i");
+            createParameters.Add("@Name", model.Name);
+            createParameters.Add("@Email", model.Email);
+            createParameters.Add("@PasswordHash", model.Password); // In production, hash this password!
+            createParameters.Add("@Role", model.Role);
+
+            await _dbHelperService.ExecuteQuery<dynamic>("spa_login", createParameters, true);
+
+            return Ok(new { message = "Signup successful", status = "success" });
+        }
+
+        public class SignupModel
+        {
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Password { get; set; }
+            public string Role { get; set; } 
+        }
+  
+    }   
 
 }

@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Export";
+}
+
+<div id="export-app">
+    <export></export>
+</div>
+
+<template id="export-template">
+    <div class="export-container">
+        <div class="export-controls">
+            <select v-model="selectedEntity" class="form-control">
+                <option value="products">Products</option>
+                <option value="orders">Orders</option>
+                <option value="suppliers">Suppliers</option>
+            </select>
+
+            <div class="btn-group">
+                <button v-on-click ="exportData('excel')" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button v-on-click="exportData('csv')" class="btn btn-info">
+                    <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button v-on-click="exportData('pdf')" class="btn btn-danger">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button @@click="printViewData" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Print Preview Modal -->
+        <!-- Print Preview Modal -->
+        <div class="modal fade" id="printPreviewModal" tabindex="-1" role="dialog" aria-labelledby="printPreviewModalLabel">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="printPreviewModalLabel">Print Preview - {{ capitalize(selectedEntity) }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="print-header">
+                            <h2>{{ capitalize(selectedEntity) }} Report</h2>
+                            <p>Generated on: {{ new Date().toLocaleString() }}</p>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th v-for="(value, key) in printData[0]" :key="key">{{ capitalize(key) }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, index) in printData" :key="index">
+                                        <td v-for="(value, key) in item" :key="key">
+                                            {{ formatValue(value) }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" click ="printNow">
+                            <i class="fas fa-print"></i> Print Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+@section Scripts {
+    <script type="module" src="/app/export.js"></script>
+}

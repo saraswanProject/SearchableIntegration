@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyIntegratedApp.Helpers;
 using MyIntegratedApp.Models;
@@ -10,13 +11,14 @@ namespace MyIntegratedApp.Controllers
     public class ExportImportController : Controller
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             // This returns Views/ProductApi/Index.cshtml
             return View();
         }
     }
-
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class ExportImport : ControllerBase

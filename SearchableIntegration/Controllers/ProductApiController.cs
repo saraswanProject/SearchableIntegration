@@ -9,7 +9,7 @@ namespace MyIntegratedApp.Controllers
 {
     public class ProductApiController : Controller
     {
-        [Authorize(Roles = "User")]
+        
         [HttpGet]
         public IActionResult Index()
         {

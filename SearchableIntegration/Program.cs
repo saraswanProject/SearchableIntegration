@@ -45,11 +45,7 @@ app.UseAuthorization();
 //        await emailService.SendUnauthorizedAttemptEmail(user, path);
 //    }
 //});
-//app.MapGet("/", context =>
-//{
-//    context.Response.Redirect("/login.html");
-//    return Task.CompletedTask;
-//});
+
 
 app.MapControllerRoute(
     name: "default",

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyIntegratedApp.Helpers;
 using MyIntegratedApp.Models;
 using Newtonsoft.Json;
@@ -10,12 +11,13 @@ namespace MyIntegratedApp.Controllers
     public class DummyApiIntegrationController : Controller
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();
         }
     }
-
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class DummyApiIntegration : ControllerBase
