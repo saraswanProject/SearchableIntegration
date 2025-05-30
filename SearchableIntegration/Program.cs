@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IDbHelperService, DbHelperService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {

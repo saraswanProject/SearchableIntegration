@@ -85,5 +85,12 @@ namespace MyIntegratedApp.Helpers
 
             return table;
         }
+
+        public async Task<SqlMapper.GridReader> ExecuteQueryMultipleAsync(string sql, DynamicParameters? param = null, bool isproc = false)
+        {
+            DbConnection conn = GetConn();
+            return await conn.QueryMultipleAsync(sql, param, commandType: isproc ? CommandType.StoredProcedure : CommandType.Text);
+        }
+
     }
 }

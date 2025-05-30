@@ -1,10 +1,32 @@
 using Microsoft.AspNetCore.Mvc;
+using MyIntegratedApp.Helpers;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace MyIntegratedApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
+        private readonly IDbHelperService _dbHelperService;
+        private readonly IConfiguration _configuration;
+        private readonly IDashboardService _dashboardService;
+        public HomeController(IConfiguration configuration, IDbHelperService dbHelperService, IDashboardService dashboardService )
+        {
+            _configuration = configuration;
+            _dbHelperService = dbHelperService;
+            _dashboardService = dashboardService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var dashboardData = await _dashboardService.GetDashboardDataAsync();
+            ViewBag.ProductChartData = dashboardData.ProductCategories;
+            ViewBag.SalesChartData = dashboardData.MonthlySales;
+            ViewBag.UserStats = dashboardData.OrderStatusDistribution;
+            return View(dashboardData);
+        }
 
         public IActionResult AccessDenied()
         {
@@ -13,6 +35,13 @@ namespace MyIntegratedApp.Controllers
                 ViewBag.UserName = User.Identity.Name;
             }
             return View();
+        }
+
+       
+
+        private string GetMonthName(int month)
+        {
+            return new DateTime(2020, month, 1).ToString("MMM");
         }
     }
 }

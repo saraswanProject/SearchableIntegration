@@ -9,5 +9,6 @@ namespace MyIntegratedApp.Helpers
         void Execute(string sql, DynamicParameters? param = null, bool isproc = false);
         DataTable ConvertToDataTable<T>(IList<T> data);
         Task<T?> ExecuteSingle<T>(string sql, DynamicParameters? param = null, bool isproc = false);
+        Task<SqlMapper.GridReader> ExecuteQueryMultipleAsync(string sql, DynamicParameters? param = null, bool isproc = false);
     }
 }
