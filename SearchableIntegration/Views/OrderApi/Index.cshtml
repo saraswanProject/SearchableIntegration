@@ -1,0 +1,122 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Order Management";
+}
+
+<div id="order-app" class="container mt-4">
+    <order-list></order-list>
+</div>
+
+<template id="order-template">
+    <div>
+        <h2 class="mb-4">Order Management</h2>
+
+        <div class="card-body col-12">
+            <form v-on:submit.prevent="editId ? updateOrder() : addOrder()">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Customer Name*</label>
+                        <input v-model="newOrder.customerName" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Customer Email*</label>
+                        <input v-model="newOrder.customerEmail" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Order Date*</label>
+                        <input v-model="newOrder.orderDate" type="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Order Status</label>
+                        <input v-model="newOrder.orderStatus" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <button type="button" class="btn btn-info" @@click ="addOrderDetail">+ Add Product</button>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>SubTotal</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in newOrder.orderDetails" :key="index">
+                                    <td>
+                                        <select v-model="item.productID" class="form-select" @@change ="updateSubTotal(item)">
+                                            <option disabled value="">Select Product</option>
+                                            <option v-for="prod in products" :value="prod.id">{{ prod.name }}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" :value="item.price" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" v-model.number="item.quantity" @@input ="updateSubTotal(item)">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" v-model.number="item.subTotal" readonly>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" @@click.prevent ="newOrder.orderDetails.splice(index, 1)">Remove</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary me-2">
+                            {{ editId ? 'Update' : 'Save' }} Order
+                        </button>
+                        <button type="button" @@click ="resetForm" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-4">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="o in orders" :key="o.orderID">
+                        <td>{{ o.customerName }}</td>
+                        <td>{{ o.customerEmail }}</td>
+                        <td>{{ o.orderDate }}</td>
+                        <td>{{ o.orderStatus }}</td>
+                        <td>{{ o.totalAmount }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" @@click ="editOrder(o)">Edit</button>
+                            <button class="btn btn-sm btn-danger" @@click ="deleteOrder(o.orderID)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="/app/order.js"></script>
+}

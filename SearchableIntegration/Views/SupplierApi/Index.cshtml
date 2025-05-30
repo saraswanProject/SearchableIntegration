@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewData["Title"] = "Supplier Management";
+}
+
+<div id="supplier-app" class="container mt-4">
+    <supplier-list></supplier-list>
+</div>
+
+<template id="supplier-template">
+ 
+        <h2 class="mb-4">Supplier Management</h2>
+     
+  <div class="card-body col-12">
+        <form v-on:submit.prevent="submitForm">
+          
+        <div class="row">
+          
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Supplier Name*</label>
+                    <input v-model="newSupplier.supplierName" class="form-control" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                    <label class="form-label">Contact Number*</label>
+                    <input v-model="newSupplier.contactNumber" class="form-control" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                    <label class="form-label">Email*</label>
+                    <input v-model="newSupplier.email" class="form-control" required>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="col-md-4 mb-3">
+                    <label class="form-label">address*</label>
+                    <input v-model="newSupplier.address" class="form-control" required>
+            </div>
+               
+            <div class="col-md-4 mb-3">
+                    <label class="form-label">City*</label>
+                    <input v-model="newSupplier.city" class="form-control" required>
+                </div>
+
+
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Country*</label>
+                    <input v-model="newSupplier.country" class="form-control" required>
+                </div>
+
+                <!-- Row 4: Buttons -->
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary me-2">
+                    {{ editId ? 'Update' : 'Save' }}
+                </button>
+
+                    <button type="button" v-on:click="resetForm">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="mt-4">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+              @*   <th>ID</th> *@
+                <th>Name</th>
+                <th>Contact Number</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Country</th>
+             
+            </tr>
+        </thead>
+        <tbody>
+                <tr v-for="p in suppliers" :key="p.id">
+                  @*   <td>{{ p.id }}</td> *@
+                    <td>{{ p.supplierName }}</td>
+                    <td>{{ p.contactNumber }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.address }}</td>
+                    <td>{{ p.city }}</td>
+                    <td>{{ p.country }}</td>
+               
+                <td>
+                        <button class="btn btn-sm btn-warning" @@click="editSupplier(p)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @@click="deleteSupplier(p.supplierID)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</template>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script type="module" src="/app/supplier.js"></script>
+}

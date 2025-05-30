@@ -1,13 +1,160 @@
-﻿@{
+﻿@model SearchableIntegration.Models.DashboardViewModel
+@using System.Text.Json
+
+@{
     Layout = "~/Views/Shared/_LayoutPage.cshtml";
-    ViewData["Title"] = "Product Management";
+    ViewData["Title"] = "Dashboard";
 }
-<html>
-<head>
-    <title>Vue + .NET Integrated</title>
-    <script type="module" src="/app/app.js"></script>
-</head>
-<body>
-    <div id="app"></div>
-</body>
-</html>
+
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserStatistics.TotalUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more cards as needed -->
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+
+        <!-- Bar Chart: Products by Category -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Products by Category</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="productChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart: Order Status -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Order Status</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Optional Line Chart Row -->
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Monthly Sales</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Strongly typed data from model
+        var productData = @Html.Raw(JsonSerializer.Serialize(
+                    Model.ProductCategories.ToDictionary(p => p.Category, p => p.Count)
+            ));
+
+    var orderStatusData = @Html.Raw(JsonSerializer.Serialize(
+                Model.OrderStatusDistribution.ToDictionary(o => o.Status, o => o.Count)
+        ));
+
+    var salesData = @Html.Raw(JsonSerializer.Serialize(Model.MonthlySales));
+
+       
+        var ctxBar = document.getElementById('productChart').getContext('2d');
+        var productChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(productData),
+                datasets: [{
+                    label: 'Products',
+                    data: Object.values(productData),
+                    backgroundColor: 'rgba(78, 115, 223, 0.5)',
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Pie Chart - Order Status
+        var ctxPie = document.getElementById('orderStatusChart').getContext('2d');
+        var pieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(orderStatusData),
+                datasets: [{
+                    data: Object.values(orderStatusData),
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'
+                    ]
+                }]
+            },
+            options: {
+                responsive: false
+            }
+        });
+
+        // Line Chart - Monthly Sales
+        var ctxLine = document.getElementById('salesChart').getContext('2d');
+        var lineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: salesData.map(x => x.Month),
+                datasets: [{
+                    label: 'Sales Amount',
+                    data: salesData.map(x => x.Amount),
+                    backgroundColor: 'rgba(54, 185, 204, 0.2)',
+                    borderColor: 'rgba(54, 185, 204, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                    responsive: false,
+                scales: {
+                    y: {
+                            beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyIntegratedApp.Helpers;
 using Newtonsoft.Json;
+using SearchableIntegration.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -22,9 +23,7 @@ namespace MyIntegratedApp.Controllers
         public async Task<IActionResult> Index()
         {
             var dashboardData = await _dashboardService.GetDashboardDataAsync();
-            ViewBag.ProductChartData = dashboardData.ProductCategories;
-            ViewBag.SalesChartData = dashboardData.MonthlySales;
-            ViewBag.UserStats = dashboardData.OrderStatusDistribution;
+
             return View(dashboardData);
         }
 
